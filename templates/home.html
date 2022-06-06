@@ -3,10 +3,10 @@
 {% block title %}Home{% endblock %}
 
 {% block content %}
-<h2>Home Page</h2>
 <p>Welcome back, {{ username }}!</p>
+
 <h2>Projects</h2>
 {% for item in projects %}
-<h1 class="userProject"><a style="text-decoration:none; color:inherit;" href="{{ url_for('pending', projID=item[0]) }}"><h2>{{ item[1] }}</h2></a></h1>
+<h1 class="userProject"><a style="text-decoration:none; color:inherit;" href="{{ url_for('all_issues', projID=item[0]) }}"><h2>{{ item[1] }}</h2></a></h1>
 {% endfor %}
 {% endblock %}

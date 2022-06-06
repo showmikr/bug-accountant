@@ -2,9 +2,8 @@
 {% extends "base.html" %}
 
 {% block content %}
-  <h1>{{ session['project_names'][session['project']] }}</h1>
-  <h2>Pending Issues for {{ session['project_names'][session['project']] }}</h2>
-  <table id="pending" class="table table-striped">
+  <h2>All Issues for {{ session['project_names'][session['project']] }}</h2>
+  <table id="all_issues" class="table table-striped">
     <thead>
       <tr>
         <th>TicketID</th>
@@ -13,6 +12,8 @@
         <th>Assignee</th>
         <th>Reporter</th>
         <th>Date Assigned</th>
+        <th>Date Reported</th>
+        <th>Date Closed</th>
       </tr>
     </thead>
     <tbody>
@@ -24,6 +25,8 @@
           <td>{{ item[3] }}</td>
           <td>{{ item[4] }}</td>
           <td>{{ item[5] }}</td>
+          <td>{{ item[6] }}</td>
+          <td>{{ item[7] }}</td>
         </tr>
       {% endfor %}
     </tbody>

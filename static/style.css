@@ -131,7 +131,8 @@ body.loggedin {
     box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.1);
     margin: 25px 0;
     padding: 25px;
-  background-color: #fff;
+    background-color: #fff;
+    border-radius: 10px;
 }
 .content > p table td, .content > div table td {
   padding: 5px;
@@ -145,6 +146,9 @@ body.loggedin {
   padding: 5px;
   margin: 0 0 10px 0;
 }
+
+
+
 .userProject {
     text-decoration: none;
     margin: 0;
@@ -158,6 +162,58 @@ body.loggedin {
     border-radius: 10px;
     padding: 20px;
 }
+
+.ticket input[type=text], select {
+    width: 100%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+  }
+
+  .ticket input[type=submit] {
+    width: 100%;
+    background-color: #4CAF50;
+    color: white;
+    padding: 14px 20px;
+    margin: 8px 0;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+  }
+
+  .ticket input[type=submit]:hover {
+    background-color: #45a049;
+  }
+  
+  .ticket div {
+    border-radius: 5px;
+    background-color: #f2f2f2;
+    padding: 20px;
+  }
+
+  .ticket textarea {
+    width: 100%;
+    height: 120px;
+    padding: 12px 20px;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 16px;
+    resize: none;
+  }
+
+  .ticket label {
+      font-weight: 650;
+  }
+
+  #assign_label {
+    width: 100%;
+    padding-top: 10px;
+    padding-bottom: 20px;
+  }
 
 /* Below is sidebar styling */
 

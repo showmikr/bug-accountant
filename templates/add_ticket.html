@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<body>
+<h3 style="padding-top: 20px;">Add Issue</h3>
+<div class="ticket">
+  <form id="add_ticket_form" action="{{ url_for('add_ticket', projID=session['project']) }}" method="post">
+    <label for="summary_input">Ticket Summary</label>
+    <input type="text" id="summary_input" name="summary" placeholder="Briefly describe the issue" required>
+
+    <label for="desc_input">Description</label>
+    <textarea type="text" id="desc_input" maxlength="1000" name="description" placeholder="Extra Information (Optional)"></textarea>
+
+    <label for="priority_input">Priority</label>
+    <select id="priority_input" name="priority">
+        <option value="1">Low</option>
+        <option value="2">Medium</option>
+        <option value="3">High</option>
+    </select>
+
+    <label id="assign_label" for="assignee_input">Assign To
+        <select id="assignee_input" name="assignee">
+            <option value="{{ None }}">Leave Unassigned</option>
+            <option value="{{ session['username'] }}">Myself</option>
+          </select>
+    </label>
+    
+
+    <input type="submit" value="Submit">
+  </form>
+</div>
+</body>
+
+{% endblock %}
