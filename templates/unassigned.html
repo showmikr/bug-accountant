@@ -1,0 +1,48 @@
+<!-- Coded with help from: https://github.com/miguelgrinberg/flask-tables/blob/main/templates/bootstrap_table.html /-->
+{% extends "base.html" %}
+
+{% block content %}
+<h1 class="project_title">{{ session['project_names'][session['project']] }}</h1>
+<form action="{{ url_for('assign_issue') }}" method="post">
+  <div>
+    <h2>Unassigned Issues</h2>
+    <table id="unassigned_table" class="table table-striped">
+      <thead>
+        <tr>
+          <th>TicketID</th>
+          <th>Priority</th>
+          <th>Summary</th>
+          <th>Reporter</th>
+          <th>Date Reported</th>
+          {% if session['project_roles'][session['project']] < 2 %}
+          <th>Assign</th>
+          {% endif %}
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in issues %}
+          <tr>
+            <td><input type="hidden" name="ticket_id" value="{{ item[0] }}">{{ item[0] }}</td>
+            <td>{{ item[1] }}</td>
+            <td>{{ item[2] }}</td>
+            <td>{{ item[3] }}</td>
+            <td>{{ item[4] }}</td>
+            {% if session['project_roles'][session['project']] < 2 %}
+            <td>
+              <select name="assignment">
+                  <option value="Unassigned">Unassigned</option>
+                  <option value="{{ session['username'] }}">Myself</option>
+                  {% for person in session['project_users'] %}
+                  <option value="{{ person }}">{{ person }}</option>
+                  {% endfor %}
+              </select>
+            </td>
+            {% endif %}
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    <button type="submit" style="float: right; padding: auto; text-align: center;">Assign Tickets</button>
+  </div>
+</form>
+{% endblock %}

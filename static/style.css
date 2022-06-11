@@ -117,12 +117,12 @@ body.loggedin {
     background-color: #f3f4f7;
 }
 .content {
-    width: 1000px;
+    width: 1100px;
     margin: 0 auto;
 }
 .content h2 {
     margin: 0;
-    padding: 25px 0;
+
     font-size: 22px;
     border-bottom: 1px solid #e0e0e3;
     color: #4a536e;
@@ -149,19 +149,48 @@ body.loggedin {
 
 
 
+.content form div {
+    margin: 20px 0;
+    background-color: white;
+    border-radius: 15px;
+    padding: 20px;
+    overflow: hidden;
+    box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.1);
+}
+
+.content div h2 {
+    text-align: center;
+    padding: 8px 0;
+}
+
+
+.project_title {
+    padding: 20px 0;
+    font-size: 24;
+    font-weight: 400;
+}
+
 .userProject {
     text-decoration: none;
     margin: 0;
     padding: 25px 0;
     font-size: 32px;
-    color: inherit;
 }
 
 .userProject h2 {
     border: 1px solid;
     border-radius: 10px;
     padding: 20px;
+    color: inherit;
 }
+
+.userProject h2:hover {
+    background-color: #2f3947;
+    color: #e0e0e3;
+}
+
+/*  This section implements the CSS for the Add Issue Page.
+    Most CSS sourced from: https://www.w3schools.com/css/tryit.asp?filename=trycss_forms */
 
 .ticket input[type=text], select {
     width: 100%;
@@ -214,6 +243,7 @@ body.loggedin {
     padding-top: 10px;
     padding-bottom: 20px;
   }
+
 
 /* Below is sidebar styling */
 

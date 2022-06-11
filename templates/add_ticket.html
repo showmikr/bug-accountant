@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block content %}
-
+<h1 class="project_title">{{ session['project_names'][session['project']] }}</h1>
 <body>
 <h3 style="padding-top: 20px;">Add Issue</h3>
 <div class="ticket">
@@ -21,8 +21,13 @@
 
     <label id="assign_label" for="assignee_input">Assign To
         <select id="assignee_input" name="assignee">
-            <option value="{{ None }}">Leave Unassigned</option>
+            <option value="Leave Unassigned">Leave Unassigned</option>
             <option value="{{ session['username'] }}">Myself</option>
+            {% for person in session['project_users'] %}
+            {% if person != session['username'] %}
+            <option value="{{ person }}">{{ person }}</option>
+            {% endif %}
+            {% endfor %}
           </select>
     </label>
     

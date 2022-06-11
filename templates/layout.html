@@ -50,7 +50,7 @@
           ><span>Pending Issues</span></a
           >
         <a
-           href="#"
+           href="{{ url_for('unassigned', projID=session['project']) }}"
            class="list-group-item list-group-item-action py-2"
            >
           <i class="fas fa-box-open fa-fw me-3"></i><span>Unassigned</span>
@@ -58,35 +58,13 @@
         <a
            href="{{ url_for('resolved', projID=session['project']) }}"
            class="list-group-item list-group-item-action py-2"
-           ><i class="fas fa-chart-bar fa-fw me-3"></i><span>Resolved</span></a
+           ><i class="fas fa-check fa-fw me-3"></i><span>Resolved</span></a
           >
         <a
            href="{{ url_for('add_ticket', projID=session['project']) }}"
            class="list-group-item list-group-item-action py-2"
            ><i class="fas fa-edit fa-fw me-3"></i
           ><span>Add Issue</span></a
-          >
-        <a
-           href="#"
-           class="list-group-item list-group-item-action py-2"
-           ><i class="fas fa-building fa-fw me-3"></i
-          ><span>Partners</span></a
-          >
-        <a
-           href="#"
-           class="list-group-item list-group-item-action py-2"
-           ><i class="fas fa-calendar fa-fw me-3"></i
-          ><span>Calendar</span></a
-          >
-        <a
-           href="#"
-           class="list-group-item list-group-item-action py-2"
-           ><i class="fas fa-users fa-fw me-3"></i><span>Users</span></a
-          >
-        <a
-           href="#"
-           class="list-group-item list-group-item-action py-2"
-           ><i class="fas fa-money-bill fa-fw me-3"></i><span>Sales</span></a
           >
       </div>
     </div>

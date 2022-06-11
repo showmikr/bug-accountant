@@ -2,8 +2,10 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h2>My Issues for {{ session['project_names'][session['project']] }}</h2>
+<h1 class="project_title">{{ session['project_names'][session['project']] }}</h1>
 <form action="/my_issues/close_tickets" method="post">
+  <div>
+  <h2>My Issues</h2>
   <table id="my_issues" class="table table-striped">
     <thead>
       <tr>
@@ -31,5 +33,6 @@
     </tbody>
   </table>
   <button type="submit" style="float: right; padding: auto; text-align: center;">Close Tickets</button>
+  </div>
 </form>
 {% endblock %}

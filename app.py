@@ -1,11 +1,6 @@
-from ast import arg
-from cmath import log
-from locale import currency
-from turtle import title
-from urllib.parse import urldefrag
-from colorama import Cursor
 from flask import Flask, render_template, request, redirect, url_for, session
 from flask_mysqldb import MySQL
+from bcrypt import hashpw, gensalt
 import MySQLdb.cursors
 import re
 
@@ -59,6 +54,8 @@ def login():
             for project_role in project_roles:
                 session['project_roles'][project_role['ProjectID']] = project_role['ProjectRole']
             # Redirect to home page
+            hashed_pass = hashpw(password.encode('utf-8'), gensalt()) # CODE FOR MAKING HASHED PASSWORD IMPLEMENT ASAP
+            print(hashed_pass)
             return redirect(url_for('home'))
         else:
             # Account doesnt exist or username/password incorrect
@@ -147,14 +144,34 @@ def pending(projID):
 
 @app.route('/unassigned/<projID>')
 def unassigned(projID):
-    cursor = mysql.connection.cursor()
-    cursor.callproc('GetUnassignedIssues', [projID])
-    unassigned = cursor.fetchall()
     if 'loggedin' in session:
         session['project'] = projID
-        return render_template('unassigned_issues.html', unassigned=unassigned)
+        cursor = mysql.connection.cursor()
+        cursor.callproc('GetUnassignedIssues', [projID])
+        unassigned = cursor.fetchall()
+        return render_template('unassigned.html', issues=unassigned)
     else:
         return redirect(url_for('login'))
+
+
+@app.route('/unassigned/assign_issue/', methods=['GET', 'POST'])
+def assign_issue():
+    if request.method == 'POST':
+        cursor = mysql.connection.cursor()
+        user_assign_list = request.form.getlist('assignment')
+        print(user_assign_list)
+        ticket_list = request.form.getlist('ticket_id')
+        print(ticket_list)
+        for ticket, user in zip(ticket_list, user_assign_list):
+            if user.lower() != "unassigned":
+                value = (session['project'], int(ticket), session['project_users'][user])
+                cursor.callproc('AssignIssue', value)
+                mysql.connection.commit()
+        cursor.close()
+        return redirect(url_for('unassigned', projID=session['project']))
+    else:
+        return redirect(url_for('unassigned', projID=session['project']))
+
 
 
 @app.route('/my_issues/<projID>')
@@ -189,6 +206,7 @@ def resolved(projID):
     data = cursor.fetchall()
     return render_template('resolved.html', resolved=data)
 
+
 @app.route('/resolved/reopen_tickets', methods=['GET', 'POST'])
 def reopen_tickets():
     if request.method == 'POST':
@@ -213,12 +231,11 @@ def all_issues(projID):
         session['project'] = projID
         session['project_users'] = {}
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-        cursor.callproc('GetProjectUsers', (session['project']))
+        cursor.callproc('GetProjectUsers', (projID,))
         userlist = cursor.fetchall()
         for user in userlist:
             user_id = user['UserID']
-            if user_id != session['id']:
-                session['project_users'][user['UserName']] = user_id
+            session['project_users'][user['UserName']] = user_id
         print(session['project_users'])
         return render_template('all_issues.html', issues=all_issues)
     else:
@@ -230,13 +247,11 @@ def add_ticket(projID):
     if request.method == 'GET':
         return render_template('add_ticket.html')
     elif request.method == 'POST':
-        assignee = None
+        assignee_id = None
         assignee_str = request.form.get('assignee')
-        if assignee_str != None:
-            if assignee_str == session['username']:
-                assignee_id = session['id']
-            else:
-                assignee_id = session['project_users'][assignee_str]
+        print(assignee_str)
+        if assignee_str != 'Leave Unassigned':
+            assignee_id = session['project_users'][assignee_str]
 
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
         values = (

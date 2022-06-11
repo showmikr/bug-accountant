@@ -2,8 +2,10 @@
 {% extends "base.html" %}
 
 {% block content %}
-  <h1>{{ session['project_names'][session['project']] }}</h1>
-  <h2>Pending Issues for {{ session['project_names'][session['project']] }}</h2>
+
+<h1 class="project_title">{{ session['project_names'][session['project']] }}</h1>
+<div>
+  <h2>Pending Issues</h2>
   <table id="pending" class="table table-striped">
     <thead>
       <tr>
@@ -28,4 +30,5 @@
       {% endfor %}
     </tbody>
   </table>
+</div>
 {% endblock %}
