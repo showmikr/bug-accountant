@@ -1,0 +1,17 @@
+<link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+<table>
+    <tr>
+        <th>ProjectID</th>
+        <th>ProjectName</th>
+        <th>UserID</th>
+        <th>ProjectRole</th>
+    </tr>
+    {% for item in data %}
+    <tr>
+        <td>{{item.ProjectID}}</td>
+        <td>{{item.ProjectName}}</td>
+        <td>{{item.UserID}}</td>
+        <td>{{item.ProjectRole}}</td>
+    </tr>
+    {% endfor %}
+</table>
