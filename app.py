@@ -3,16 +3,23 @@ from flask_mysqldb import MySQL
 from bcrypt import hashpw, gensalt
 import MySQLdb.cursors
 import re
+import os
 
 app = Flask(__name__)
 
 # Change this to your secret key (can be anything, it's for extra protection)
 app.secret_key = 'secretkey'
 
-app.config['MYSQL_HOST'] = 'localhost'
-app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = 'password'
-app.config['MYSQL_DB'] = 'BugAccountantP2'
+# MySQL configuration -  flask_mysqldb specific keys
+app.config['MYSQL_HOST'] = os.environ.get('DATABASE_HOST')  # Get hostname from env var
+app.config['MYSQL_USER'] = os.environ.get('DATABASE_USER')
+app.config['MYSQL_PASSWORD'] = os.environ.get('DATABASE_PASSWORD')
+app.config['MYSQL_DB'] = os.environ.get('DATABASE_NAME')
+
+# app.config['MYSQL_HOST'] = 'localhost'
+# app.config['MYSQL_USER'] = 'root'
+# app.config['MYSQL_PASSWORD'] = 'password'
+# app.config['MYSQL_DB'] = 'BugAccountantP2'
 
 mysql = MySQL(app)
 
@@ -274,7 +281,8 @@ def data_test():
 
 
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=True, host='0.0.0.0')
+    # app.run()
 
 # Make sure you are in bug-accountant directory when trying to start up the webpage.
 # 1. To start webpage, type the following in terminal (don't include quotes): ". venv/bin/activate" (for Linux/MacOS) 

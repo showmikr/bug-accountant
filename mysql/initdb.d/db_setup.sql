@@ -245,11 +245,9 @@ JOIN Issues ON Issues.ProjectID=Projects.ProjectID
 JOIN ProjectUsers ON ProjectUsers.ProjectID=Projects.ProjectID
 WHERE ProjectName = "Bug Accountant";
 
-/* 
-Query 2: Nested Query using IN and GROUP BY
-Purpose: Track how many tickets a given user has resolved for each project they're involved in
-Summary: Displays ProjectID, ProjectName, and # of tickets resolved by the user in each project
-*/
+-- Query 2: Nested Query using IN and GROUP BY
+-- Purpose: Track how many tickets a given user has resolved for each project they're involved in
+-- Summary: Displays ProjectID, ProjectName, and # of tickets resolved by the user in each project
 DELIMITER //
 CREATE PROCEDURE SelectResolvedTicketsAcrossProjects(UserIDValue INT)
 BEGIN
@@ -261,14 +259,12 @@ BEGIN
         WHERE AssignedTo = UserIDValue AND DateClosed IS NOT NULL
 	)
     GROUP BY issues.ProjectID;
-END; //
+END //
 DELIMITER ;
 
-/* Query 3
-Correlated nested query with proper aliasing
-Determine which projects have more issues than project x
-*/
-# x = 'NLP Paraphraser'
+-- Query 3
+-- Correlated nested query with proper aliasing
+-- Determine which projects have more issues than project x
 Select Projects.ProjectName, Count(Issues.TicketID) as 'Number of Issues'
 From Issues 
 JOIN Projects
@@ -281,7 +277,6 @@ Having Count(Issues.TicketID) > (
 	ON Issues.ProjectID = Projects.ProjectID
     Where Projects.ProjectName = 'NLP Paraphraser'
     );
-    
 
 -- **********************************************************************************************
 -- Query 4
@@ -303,11 +298,10 @@ RIGHT JOIN Users AS u1
 ON i1.AssignedTo = u1.UserID;
 
 
-/* Query 5 
-Uses nested queries with any of the set operations UNION, EXCEPT, or INTERSECT*  
-Find all the users working on Project A or Project B but not Both
-The Except set operation in MySQl is called Not In
-*/
+-- Query 5
+-- Uses nested queries with any of the set operations UNION, EXCEPT, or INTERSECT*  
+-- Find all the users working on Project A or Project B but not Both
+-- The Except set operation in MySQl is called Not In
 Select Users.UserName, Users.UserID, Projects.ProjectName
 From Users
 Join ProjectUsers
@@ -339,10 +333,8 @@ Where
 		)
 );
 
-/* 
-Non-Trivial Query 6
-Get all unassigned issues for a given project (Input = ProjectID, Output = Table of all unassigned issues)
-*/
+-- Non-Trivial Query 6
+-- Get all unassigned issues for a given project (Input = ProjectID, Output = Table of all unassigned issues)
 DELIMITER //
 CREATE PROCEDURE GetUnassignedIssues(ProjID INT) 
 BEGIN 
@@ -351,15 +343,13 @@ BEGIN
 	    JOIN Users ON ReportedBy = UserID
 	WHERE ProjectID = ProjID AND DateAssigned IS NULL
 	ORDER BY Priority DESC, DateReported ASC;
-END; // 
+END // 
 DELIMITER ;
 
-/*
-Non-Trivial Query 7 - Function call
-Purpose: Automatically increment the TicketID when adding new ticket to a given project
-Input = ProjectID, Output = Incremented TicketID value within project
-Outputs the next TicketID value when inserting a new issue into a given project
-*/
+-- Non-Trivial Query 7 - Function call
+-- Purpose: Automatically increment the TicketID when adding new ticket to a given project
+-- Input = ProjectID, Output = Incremented TicketID value within project
+-- Outputs the next TicketID value when inserting a new issue into a given project
 DELIMITER //
 CREATE FUNCTION getIncrementedTicketID(ProjID INT) 
 RETURNS INT READS SQL DATA 
@@ -374,28 +364,24 @@ BEGIN
 	        WHERE ProjectID = ProjID
 	    ) AS ProjectObserved;
 	RETURN retVal;
-END; // 
+END // 
 DELIMITER ;
 
-/*
-Non-Trivial Query 8
-Purpose: Get list of all users involved in a given project
-Summary: Displays UserID and UserName of every user involved in a given project
-*/
+-- Non-Trivial Query 8
+-- Purpose: Get list of all users involved in a given project
+-- Summary: Displays UserID and UserName of every user involved in a given project
 DELIMITER //
 CREATE PROCEDURE SelectProjectUsers(ProjID INT)
 BEGIN
     SELECT Users.UserID, UserName
     FROM projectusers JOIN users ON projectusers.UserID = users.UserID
     WHERE ProjectID = ProjID;
-END; //
+END //
 DELIMITER ;
 
-/* 
-Non trivial query 9
-Purpose: display all queries that have been assigned but not resolved
-Summary: Displays ProjectName, TicketID, 
-*/
+-- Non trivial query 9
+-- Purpose: display all queries that have been assigned but not resolved
+-- Summary: Displays ProjectName, TicketID, 
 Select Projects.ProjectName, Issues.TicketID, Users.UserName AS 'Assigned User', Issues.Summary, 
 		Issues.Description, Issues.DateReported, Issues.DateAssigned
 From Issues
@@ -405,11 +391,9 @@ Join Users
 ON Users.UserID = Issues.AssignedTo
 Where Issues.DateClosed Is NUll AND Issues.DateAssigned IS NOT NULL;
 
-/*
-Non-Trivial Query 10 - doesn't use 3 tables, but makes use of 2 queries in total
-Purpose: Get username based on userID
-Summary: Return username for a given UserID
-*/
+-- Non-Trivial Query 10 - doesn't use 3 tables, but makes use of 2 queries in total
+-- Purpose: Get username based on userID
+-- Summary: Return username for a given UserID
 -- Function that returns UserName when given a UserID
 DELIMITER //
 CREATE FUNCTION getUserName(UserIDValue INT)
@@ -420,7 +404,7 @@ BEGIN
     FROM Users
     WHERE UserID = UserIDValue;
     RETURN retString;
-END; //
+END //
 DELIMITER ;
 
 -- Apart of Query 10: Get List of all issues for a given project (assigned, unassigned, resolved - every issue)
@@ -431,7 +415,7 @@ BEGIN
     FROM BugAccountantP2.Issues
     WHERE Issues.ProjectID = ProjID
     ORDER BY Priority DESC, DateReported ASC;
-END; //
+END //
 DELIMITER ;
 
 -- PART C END
@@ -450,7 +434,7 @@ BEGIN
     INSERT INTO Issues (ProjectID, TicketID, Summary, Description, DateReported, Priority, ReportedBy, AssignedTo, DateAssigned)
     VALUES
         (ProjectID, getIncrementedTicketID(ProjectID), Summary, outputDescription, COALESCE(outputAssignedDate, NOW()), Priority, ReportedBy, AssignedTo, outputAssignedDate);
-END; //
+END //
 DELIMITER ;
 
 
@@ -465,7 +449,7 @@ BEGIN
         FROM ProjectUsers
         WHERE ProjectUsers.UserID = UID
     );
-END; //
+END //
 DELIMITER ;
 
 
@@ -477,7 +461,7 @@ BEGIN
     FROM BugAccountantP2.Issues
     WHERE Issues.ProjectID = ProjID AND AssignedTo IS NOT NULL AND DateAssigned IS NOT NULL AND DateClosed IS NULL
     ORDER BY Priority DESC, DateReported ASC;
-END; //
+END //
 DELIMITER ;
 
 
@@ -489,7 +473,7 @@ BEGIN
     FROM BugAccountantP2.Issues
     WHERE Issues.ProjectID = ProjID AND AssignedTo = UID AND DateAssigned IS NOT NULL AND DateClosed IS NULL
     ORDER BY Priority DESC, DateReported ASC;
-END; //
+END //
 DELIMITER ;
 
 
@@ -498,7 +482,7 @@ DELIMITER //
 CREATE PROCEDURE CloseIssue(ProjID INT, TickID INT)
 BEGIN
 	UPDATE Issues SET DateClosed = NOW() WHERE ProjectID = ProjID AND TicketID = TickID;
-END; //
+END //
 DELIMITER ;
 
 
@@ -507,7 +491,7 @@ DELIMITER //
 CREATE PROCEDURE ReopenIssue(ProjID INT, TickID INT)
 BEGIN
 	UPDATE Issues SET DateClosed = NULL WHERE ProjectID = ProjID AND TicketID = TickID;
-END; //
+END //
 DELIMITER ;
 
 
@@ -518,7 +502,7 @@ BEGIN
     SELECT ProjectID, ProjectRole
     FROM ProjectUsers
     WHERE UserID = UID;
-END; //
+END //
 DELIMITER ;
 
 
@@ -529,7 +513,7 @@ BEGIN
     SELECT DISTINCT TicketID, Priority, Summary, getUserName(AssignedTo) AS Asignee, getUserName(ReportedBy) AS Reporter, DateReported, DateClosed
     FROM Issues
     WHERE ProjectID = ProjID AND DateClosed IS NOT NULL;
-END; //
+END //
 DELIMITER ;
 
 
@@ -540,7 +524,7 @@ BEGIN
     SELECT DISTINCT UserID, getUserName(UserID) as UserName
     FROM ProjectUsers
     WHERE ProjectID = ProjID;
-END; //
+END //
 DELIMITER ;
 
 
@@ -553,7 +537,7 @@ BEGIN
 		DateAssigned = NOW(),
         AssignedTo = UID
     WHERE ProjectID = ProjID AND TicketID = TickID;
-END; //
+END //
 DELIMITER ;
 
 
@@ -567,5 +551,6 @@ BEGIN
 		VALUES (ProjectTitle);
     INSERT INTO ProjectUsers
 		VALUES (ProjID, ProjectOwner, 0);
-END; //
+END //
 DELIMITER ;
+
